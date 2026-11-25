@@ -1,0 +1,553 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NovaTech | AI Customer Support</title>
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #080d19;
+      --surface: #111b2d;
+      --panel: #17243a;
+      --border: #293852;
+      --text: #eaf1fc;
+      --muted: #9caec9;
+      --accent: #638bff;
+      --accent2: #35d3c0;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, system-ui, sans-serif;
+      background:
+        radial-gradient(ellipse at 20% 0%, #1d2c58 0%, transparent 50%),
+        var(--bg);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .app {
+      width: min(100%, 1100px);
+      height: min(850px, calc(100vh - 48px));
+      min-height: 480px;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: var(--surface);
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      overflow: hidden;
+      box-shadow: 0 24px 80px #0005;
+    }
+
+    .sidebar {
+      border-right: 1px solid var(--border);
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      gap: 26px;
+      background: #0e1727;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: -.5px;
+    }
+
+    .logo {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 12px;
+      color: #081020;
+      font-weight: 900;
+    }
+
+    .sidebar h3 {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 12px;
+    }
+
+    .suggestion {
+      display: block;
+      width: 100%;
+      border: 1px solid var(--border);
+      background: #17233a;
+      border-radius: 12px;
+      text-align: left;
+      color: var(--text);
+      padding: 12px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      font: inherit;
+      font-size: 13px;
+      line-height: 1.5;
+      transition: .2s;
+    }
+
+    .suggestion:hover {
+      border-color: var(--accent);
+      background: #223455;
+    }
+
+    .sidebar-note {
+      margin-top: auto;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .chat {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      min-height: 0;
+    }
+
+    .header {
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      gap: 10px;
+    }
+
+    .header h1 {
+      font-size: 17px;
+      margin: 0 0 5px;
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .new-chat {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 9px 13px;
+      border-radius: 9px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .new-chat:hover {
+      background: var(--panel);
+    }
+
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 19px;
+    }
+
+    .message {
+      max-width: 85%;
+      padding: 15px 17px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.75;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .assistant {
+      align-self: flex-start;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 5px;
+    }
+
+    .user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, #365bd3, #3850ad);
+      border-bottom-right-radius: 5px;
+    }
+
+    .message-label {
+      color: #a8bffb;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .user .message-label {
+      color: #e0e8ff;
+    }
+
+    .source-list {
+      margin-top: 13px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .source-item { margin-top: 5px; }
+
+    .ticket {
+      margin-top: 12px;
+      padding: 10px;
+      background: #142b35;
+      border: 1px solid #316a70;
+      border-radius: 9px;
+      font-size: 12px;
+      color: #9be8df;
+    }
+
+    .composer {
+      border-top: 1px solid var(--border);
+      padding: 19px 24px;
+    }
+
+    .input-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      background: #0c1525;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 9px;
+    }
+
+    textarea {
+      background: transparent;
+      border: none;
+      outline: none;
+      resize: none;
+      width: 100%;
+      min-height: 42px;
+      max-height: 130px;
+      padding: 11px;
+      color: var(--text);
+      font: inherit;
+      font-size: 14px;
+    }
+
+    textarea::placeholder { color: #7484a0; }
+
+    .send {
+      width: 43px;
+      height: 43px;
+      border: none;
+      border-radius: 10px;
+      background: var(--accent);
+      color: white;
+      cursor: pointer;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .send:disabled {
+      cursor: not-allowed;
+      opacity: .5;
+    }
+
+    .disclaimer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 11px;
+      margin: 10px 0 0;
+    }
+
+    @media (max-width: 750px) {
+      body { padding: 0; }
+      .app {
+        height: 100dvh;
+        min-height: 0;
+        border-radius: 0;
+        grid-template-columns: 1fr;
+        border: none;
+      }
+      .sidebar { display: none; }
+      .header, .composer { padding: 15px; }
+      .messages { padding: 18px 14px; }
+      .message { max-width: 94%; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">N</div>
+        NovaTech
+      </div>
+
+      <div>
+        <h3>Quick questions</h3>
+
+        <button class="suggestion"
+          data-question="How long does standard shipping take?">
+          📦 Shipping information
+        </button>
+
+        <button class="suggestion"
+          data-question="What is your return policy?">
+          ↩️ Returns and exchanges
+        </button>
+
+        <button class="suggestion"
+          data-question="Can I use two discount codes together?">
+          🏷️ Discount policies
+        </button>
+
+        <button class="suggestion"
+          data-question="I want to speak to a human representative.">
+          🎧 Human support
+        </button>
+      </div>
+
+      <div class="sidebar-note">
+        AI-powered assistance using NovaTech's
+        knowledge base. Some requests may need
+        a human support representative.
+      </div>
+    </aside>
+
+    <main class="chat">
+      <header class="header">
+        <div>
+          <h1>Customer Support</h1>
+          <div class="subtitle">✦ NovaTech AI Assistant</div>
+        </div>
+
+        <button class="new-chat" id="newChat">
+          + New Chat
+        </button>
+      </header>
+
+      <div class="messages" id="messages"
+        role="log" aria-live="polite"></div>
+
+      <form class="composer" id="chatForm">
+        <div class="input-row">
+          <textarea
+            id="messageInput"
+            placeholder="Ask about orders, products or policies..."
+            maxlength="2000"
+            rows="1"
+            aria-label="Customer message"
+            required
+          ></textarea>
+
+          <button class="send" id="sendButton"
+            type="submit" aria-label="Send message">
+            ↑
+          </button>
+        </div>
+
+        <p class="disclaimer">
+          AI responses may be inaccurate.
+          Do not share passwords or payment details.
+        </p>
+      </form>
+    </main>
+  </div>
+
+  <script>
+    const messages = document.getElementById("messages");
+    const input = document.getElementById("messageInput");
+    const form = document.getElementById("chatForm");
+    const sendButton = document.getElementById("sendButton");
+    const newChatButton = document.getElementById("newChat");
+
+    let conversationId = sessionStorage.getItem(
+    "novatech_conversation_id"
+    );
+    let loading = false;
+
+    function AddMessage(role, content, sources = [], ticketId = null) {
+      const bubble = document.createElement("div");
+      bubble.className = `message ${role}`;
+
+      const label = document.createElement("div");
+      label.className = "message-label";
+      label.textContent = role === "user" ? "You" : "NovaTech Assistant";
+      bubble.appendChild(label);
+
+      const body = document.createElement("div");
+      body.textContent = content;
+      bubble.appendChild(body);
+
+      if (sources.length > 0) {
+        const sourceBox = document.createElement("div");
+        sourceBox.className = "source-list";
+        sourceBox.textContent = "Sources";
+
+        for (const source of sources) {
+          const item = document.createElement("div");
+          item.className = "source-item";
+          item.textContent =
+            `${source.file} — ${source.section}`;
+          sourceBox.appendChild(item);
+        }
+
+        bubble.appendChild(sourceBox);
+      }
+
+      if (ticketId) {
+        const ticketBox = document.createElement("div");
+        ticketBox.className = "ticket";
+        ticketBox.textContent = `Support Ticket: ${ticketId}`;
+        bubble.appendChild(ticketBox);
+      }
+
+      messages.appendChild(bubble);
+      messages.scrollTop = messages.scrollHeight;
+
+      return bubble;
+    }
+
+    function SetLoading(value) {
+      loading = value;
+      input.disabled = value;
+      sendButton.disabled = value;
+      newChatButton.disabled = value;
+
+      document.querySelectorAll(".suggestion").forEach(button => {
+        button.disabled = value;
+      });
+    }
+
+    async function SendMessage(message) {
+      const text = message.trim();
+
+      if (!text || loading) return;
+
+      AddMessage("user", text);
+      input.value = "";
+      SetLoading(true);
+
+      const placeholder = AddMessage(
+        "assistant",
+        "Thinking..."
+      );
+
+      try {
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            message: text,
+            conversation_id: conversationId
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        conversationId = result.conversation_id;
+
+        sessionStorage.setItem(
+            "novatech_conversation_id",
+            conversationId
+        );
+
+        placeholder.remove();
+
+        AddMessage(
+          "assistant",
+          result.answer,
+          result.sources || [],
+          result.ticket_id
+        );
+
+      } catch (error) {
+        placeholder.remove();
+
+        AddMessage(
+          "assistant",
+          "The support service is temporarily unavailable. " +
+          "Please try again."
+        );
+
+        console.error("Chat request failed:", error);
+
+      } finally {
+        SetLoading(false);
+        input.focus();
+      }
+    }
+
+    function StartNewChat() {
+      if (loading) return;
+
+      conversationId = null;
+
+      sessionStorage.removeItem("novatech_conversation_id");
+      messages.replaceChildren();
+
+      AddMessage(
+        "assistant",
+        "Hello! Welcome to NovaTech Store. " +
+        "I can help with products, shipping, returns, " +
+        "warranties and general support questions. " +
+        "How can I assist you today?"
+      );
+
+      input.value = "";
+      input.focus();
+    }
+
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+      SendMessage(input.value);
+    });
+
+    input.addEventListener("keydown", event => {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        SendMessage(input.value);
+      }
+    });
+
+    newChatButton.addEventListener("click", StartNewChat);
+
+    document.querySelectorAll(".suggestion").forEach(button => {
+      button.addEventListener("click", () => {
+        SendMessage(button.dataset.question);
+      });
+    });
+
+    if (conversationId) {
+        AddMessage(
+            "assistant",
+            "Your previous conversation is available. " +
+            "You can continue asking questions, or start a new chat."
+        );
+    } else {
+        StartNewChat();
+    }
+  </script>
+</body>
+</html>

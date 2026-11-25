@@ -1,0 +1,170 @@
+{
+  "created_at": "2026-11-25T06:25:27.230066+00:00",
+  "source_file": "evaluation_20261125_062503.json",
+  "evaluation": {
+    "summary": {
+      "total_cases": 6,
+      "completed_cases": 6,
+      "intent_accuracy": {
+        "passed": 3,
+        "evaluated": 3,
+        "percentage": 100.0
+      },
+      "outcome_accuracy": {
+        "passed": 5,
+        "evaluated": 6,
+        "percentage": 83.33
+      },
+      "source_coverage": {
+        "passed": 2,
+        "evaluated": 3,
+        "percentage": 66.67
+      },
+      "answer_correctness": "pending_manual_review",
+      "unsupported_claims": "pending_manual_review"
+    },
+    "cases": [
+      {
+        "id": "EVAL001",
+        "category": "policy_retrieval",
+        "question": "What is your return policy?",
+        "expected_intent": null,
+        "expected_status": "answered",
+        "requires_sources": true,
+        "actual_intent": "policy_inquiry",
+        "actual_status": "needs_review",
+        "answer": "I don't have enough verified information to answer that request. A support representative can review it.",
+        "sources": [],
+        "ticket_id": null,
+        "intent_correct": null,
+        "status_correct": false,
+        "source_check": false,
+        "answer_correctness": "needs_manual_review",
+        "unsupported_claims": "needs_manual_review",
+        "error": null
+      },
+      {
+        "id": "EVAL002",
+        "category": "policy_retrieval",
+        "question": "How long does standard shipping take?",
+        "expected_intent": null,
+        "expected_status": "answered",
+        "requires_sources": true,
+        "actual_intent": "policy_inquiry",
+        "actual_status": "answered",
+        "answer": "Standard shipping in the contiguous 48 states is estimated at **5–7 business days after carrier acceptance**. Processing time is additional and is not included in that estimate.",
+        "sources": [
+          {
+            "reference": 1,
+            "file": "15_frequently_asked_questions.md",
+            "section": "FAQ-03: How long is standard shipping?"
+          },
+          {
+            "reference": 2,
+            "file": "02_customer_support.md",
+            "section": "Policy baseline and terminology"
+          }
+        ],
+        "ticket_id": null,
+        "intent_correct": null,
+        "status_correct": true,
+        "source_check": true,
+        "answer_correctness": "needs_manual_review",
+        "unsupported_claims": "needs_manual_review",
+        "error": null
+      },
+      {
+        "id": "EVAL003",
+        "category": "policy_retrieval",
+        "question": "What happens if my product arrives damaged?",
+        "expected_intent": null,
+        "expected_status": "answered",
+        "requires_sources": true,
+        "actual_intent": "policy_inquiry",
+        "actual_status": "answered",
+        "answer": "If a product arrives damaged, please follow these steps:\n\n1. **Stop using the item** if it is hot, smoking, swollen, sparking, emitting an unusual odor, or otherwise unsafe.  \n     \n2. **Collect the following information**:  \n   - Order number  \n   - SKU  \n   - Description of the damage and symptoms  \n   - Approximate date you discovered the issue  \n     \n3. **Provide photos or video** of the damage through our secure upload workflow (not via unapproved channels).  \n   ,   \n4. **Report the issue within 10 calendar days** after delivery. If approved, we may provide a prepaid return label for the damaged item.  \n   ,   \n5. **Warranty coverage** may apply after the standard return period. If the damage is a covered defect, a warranty case will be opened and reviewed.  \n     \n\nIf the damage poses a safety risk (e.g., smoke, swelling, sparking), stop use immediately and let us know so we can handle it as a safety escalation.",
+        "sources": [
+          {
+            "reference": 1,
+            "file": "08_returns_exchanges.md",
+            "section": "Damaged, defective or incorrect items"
+          },
+          {
+            "reference": 2,
+            "file": "07_order_tracking.md",
+            "section": "Damaged or wrong item on arrival"
+          },
+          {
+            "reference": 5,
+            "file": "10_warranty_policy.md",
+            "section": "Claim workflow"
+          }
+        ],
+        "ticket_id": null,
+        "intent_correct": null,
+        "status_correct": true,
+        "source_check": true,
+        "answer_correctness": "needs_manual_review",
+        "unsupported_claims": "needs_manual_review",
+        "error": null
+      },
+      {
+        "id": "EVAL004",
+        "category": "human_escalation",
+        "question": "I want to speak directly to a human representative.",
+        "expected_intent": "human_support",
+        "expected_status": "needs_review",
+        "requires_sources": false,
+        "actual_intent": "human_support",
+        "actual_status": "needs_review",
+        "answer": "Your request has been recorded for human support review.\n\nSupport Ticket: NT-EVALUATION\nStatus: pending\n\nA support representative will need to review your request. No response time has been confirmed.",
+        "sources": [],
+        "ticket_id": "NT-EVALUATION",
+        "intent_correct": true,
+        "status_correct": true,
+        "source_check": null,
+        "answer_correctness": "needs_manual_review",
+        "unsupported_claims": "needs_manual_review",
+        "error": null
+      },
+      {
+        "id": "EVAL005",
+        "category": "order_escalation",
+        "question": "Please investigate the current location of my specific order.",
+        "expected_intent": "order_account",
+        "expected_status": "needs_review",
+        "requires_sources": false,
+        "actual_intent": "order_account",
+        "actual_status": "needs_review",
+        "answer": "Your request has been recorded for human support review.\n\nSupport Ticket: NT-EVALUATION\nStatus: pending\n\nA support representative will need to review your request. No response time has been confirmed.",
+        "sources": [],
+        "ticket_id": "NT-EVALUATION",
+        "intent_correct": true,
+        "status_correct": true,
+        "source_check": null,
+        "answer_correctness": "needs_manual_review",
+        "unsupported_claims": "needs_manual_review",
+        "error": null
+      },
+      {
+        "id": "EVAL006",
+        "category": "human_escalation",
+        "question": "Please create a support request so a person can help me.",
+        "expected_intent": "human_support",
+        "expected_status": "needs_review",
+        "requires_sources": false,
+        "actual_intent": "human_support",
+        "actual_status": "needs_review",
+        "answer": "Your request has been recorded for human support review.\n\nSupport Ticket: NT-EVALUATION\nStatus: pending\n\nA support representative will need to review your request. No response time has been confirmed.",
+        "sources": [],
+        "ticket_id": "NT-EVALUATION",
+        "intent_correct": true,
+        "status_correct": true,
+        "source_check": null,
+        "answer_correctness": "needs_manual_review",
+        "unsupported_claims": "needs_manual_review",
+        "error": null
+      }
+    ]
+  }
+}

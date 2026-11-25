@@ -1,0 +1,1609 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NovaTech | Support Administration</title>
+
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #0a101b;
+  --panel: #121c2c;
+  --surface: #19263a;
+  --border: #2a3b53;
+  --text: #edf3fc;
+  --muted: #9aacbf;
+  --accent: #7797ff;
+  --green: #54d6a3;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+button, input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.layout {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 235px minmax(0, 1fr);
+}
+
+.sidebar {
+  background: #101929;
+  padding: 25px 20px;
+  border-right: 1px solid var(--border);
+}
+
+.brand {
+  font-weight: 800;
+  font-size: 20px;
+  margin-bottom: 42px;
+}
+
+.brand span {
+  color: var(--accent);
+}
+
+.sidebar-label {
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 15px;
+}
+
+.nav-item {
+  display: block;
+  width: 100%;
+  padding: 13px;
+  margin-bottom: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  text-align: left;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.nav-item.active {
+  border-color: var(--accent);
+  color: #c8d5ff;
+}
+
+main {
+  min-width: 0;
+  padding: 32px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 28px;
+}
+
+h1 {
+  font-size: 25px;
+  letter-spacing: -.7px;
+  margin: 0 0 7px;
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.action-button {
+  padding: 10px 16px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+}
+
+.action-button:hover {
+  border-color: var(--accent);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.stat {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.stat-label {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.stat-value {
+  font-size: 30px;
+  font-weight: 800;
+  margin-top: 12px;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(280px, 1fr);
+  gap: 18px;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  padding: 20px;
+  min-width: 0;
+}
+
+.card h2 {
+  font-size: 16px;
+  margin: 0 0 18px;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.search {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  color: var(--text);
+  padding: 11px;
+  flex: 1;
+  min-width: 160px;
+}
+
+.filter {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 9px;
+  padding: 10px;
+}
+
+.ticket-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  max-height: 590px;
+  overflow-y: auto;
+}
+
+.ticket-row {
+  text-align: left;
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  padding: 15px;
+  color: var(--text);
+}
+
+.ticket-row:hover,
+.ticket-row.selected {
+  border-color: var(--accent);
+}
+
+.ticket-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 9px;
+}
+
+.ticket-id {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.ticket-message {
+  font-size: 13px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
+
+.badge {
+  display: inline-block;
+  padding: 5px 9px;
+  border-radius: 7px;
+  background: #34415a;
+  color: #d7e1f5;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.badge.pending {
+  background: #493925;
+  color: #ffcc85;
+}
+
+.badge.in_progress {
+  background: #263e62;
+  color: #a8caff;
+}
+
+.badge.resolved {
+  background: #1c4438;
+  color: #7ae3b4;
+}
+
+.detail-row {
+  margin-bottom: 19px;
+}
+
+.detail-label {
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 7px;
+}
+
+.detail-value {
+  font-size: 13px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.primary-button {
+  background: var(--accent);
+  border: none;
+  padding: 11px 15px;
+  color: #081325;
+  font-weight: 700;
+  border-radius: 9px;
+}
+
+.empty {
+  color: var(--muted);
+  text-align: center;
+  padding: 45px 15px;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.notice {
+  margin: 0 0 18px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.notice.error {
+  color: #ff9c9c;
+}
+
+.auth-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  background: #060a13ee;
+  padding: 20px;
+}
+
+.auth-box {
+  width: min(100%, 420px);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 30px;
+}
+
+.auth-box h2 {
+  margin: 0 0 10px;
+}
+
+.auth-box p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.auth-box input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 13px;
+  margin: 12px 0;
+}
+
+.hidden { display: none !important; }
+
+
+
+.audit-section {
+  margin-top: 28px;
+  padding-top: 22px;
+  border-top: 1px solid var(--border);
+}
+
+.audit-section h3 {
+  margin: 0 0 18px;
+  font-size: 15px;
+}
+
+.audit-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.audit-event {
+  position: relative;
+  padding: 0 0 23px 22px;
+  margin-left: 6px;
+  border-left: 1px solid var(--border);
+}
+
+.audit-event::before {
+  content: "";
+  position: absolute;
+  left: -5px;
+  top: 3px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.audit-event:last-child {
+  border-left-color: transparent;
+  padding-bottom: 0;
+}
+
+.audit-transition {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.audit-meta {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.audit-empty {
+  color: var(--muted);
+  font-size: 13px;
+  padding: 12px 0;
+}
+
+
+
+.analytics-section {
+  margin-bottom: 28px;
+}
+
+.analytics-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.analytics-heading h2 {
+  margin: 0;
+  font-size: 19px;
+}
+
+.analytics-heading span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.analytics-metrics,
+.analytics-charts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.analytics-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px;
+  min-width: 0;
+}
+
+.analytics-card h3 {
+  font-size: 15px;
+  margin: 0 0 22px;
+}
+
+.analytics-label {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.analytics-value {
+  font-size: 31px;
+  font-weight: 800;
+  margin: 11px 0;
+  letter-spacing: -1px;
+}
+
+.analytics-description {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.status-chart {
+  display: flex;
+  width: 100%;
+  height: 18px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.status-segment {
+  height: 100%;
+  transition: width .4s ease;
+}
+
+.status-segment.pending {
+  background: #e3b45b;
+}
+
+.status-segment.in_progress {
+  background: #7095f8;
+}
+
+.status-segment.resolved {
+  background: #46b99b;
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.intent-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+}
+
+.intent-row {
+  display: grid;
+  grid-template-columns: 115px minmax(0, 1fr) 34px;
+  gap: 12px;
+  align-items: center;
+}
+
+.intent-label {
+  font-size: 12px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.intent-track {
+  background: var(--surface);
+  height: 12px;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.intent-fill {
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    #5b7df0,
+    #46b9b0
+  );
+  border-radius: 20px;
+  transition: width .4s ease;
+}
+
+.intent-count {
+  font-size: 12px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.chart-empty {
+  font-size: 13px;
+  color: var(--muted);
+  padding: 12px 0;
+}
+
+
+
+.report-toolbar {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.report-toolbar label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.report-toolbar input {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 10px;
+  min-height: 40px;
+}
+
+.report-toolbar button {
+  min-height: 40px;
+}
+
+@media (max-width: 600px) {
+  .report-toolbar label {
+    flex: 1 1 140px;
+  }
+
+  .report-toolbar button {
+    flex: 1 1 auto;
+  }
+}
+
+
+@media (max-width: 850px) {
+  .analytics-charts {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 500px) {
+  .analytics-metrics {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+@media (max-width: 950px) {
+  .content { grid-template-columns: 1fr; }
+  .stats { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 650px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  main { padding: 18px; }
+  .topbar { align-items: flex-start; }
+  .stats { gap: 9px; }
+  .stat { padding: 14px; }
+  .stat-value { font-size: 24px; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">Nova<span>Tech</span></div>
+
+    <div class="sidebar-label">Administration</div>
+
+    <a href="/admin" class="nav-item active">
+      Support Tickets
+    </a>
+
+    <a href="/" class="nav-item">
+      Customer Chat
+    </a>
+
+    <button class="nav-item" id="logoutButton">
+      Lock Dashboard
+    </button>
+  </aside>
+
+  <main>
+    <div class="topbar">
+      <div>
+        <h1>Support Dashboard</h1>
+        <div class="subtitle">
+          Manage customer support escalations
+        </div>
+      </div>
+
+      <button class="action-button" id="refreshButton">
+        Refresh
+      </button>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-label">Total tickets</div>
+        <div class="stat-value" id="totalCount">—</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-label">Pending</div>
+        <div class="stat-value" id="pendingCount">—</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-label">In progress</div>
+        <div class="stat-value" id="progressCount">—</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-label">Resolved</div>
+        <div class="stat-value" id="resolvedCount">—</div>
+      </div>
+    </div>
+
+    <p class="notice" id="notice" role="status"
+       aria-live="polite"></p>
+
+
+    
+    <section class="analytics-section">
+
+
+
+    <div class="report-toolbar">
+
+      <label>
+        From
+        <input
+          type="date"
+          id="reportStartDate"
+          aria-label="Report start date"
+        >
+      </label>
+
+      <label>
+        To
+        <input
+          type="date"
+          id="reportEndDate"
+          aria-label="Report end date"
+        >
+      </label>
+
+      <button
+        class="action-button"
+        id="applyReportFilter"
+        type="button">
+        Apply Filters
+      </button>
+
+      <button
+        class="action-button"
+        id="clearReportFilter"
+        type="button">
+        Clear
+      </button>
+
+      <button
+        class="primary-button"
+        id="exportReportButton"
+        type="button">
+        Export CSV
+      </button>
+
+    </div>
+
+
+    <div class="analytics-heading">
+        <h2>Support Analytics</h2>
+        <span>Live SQLite metrics</span>
+    </div>
+
+    <div class="analytics-metrics">
+
+        <div class="analytics-card">
+        <div class="analytics-label">
+            Resolution Rate
+        </div>
+
+        <div class="analytics-value"
+            id="resolutionRate">
+            —
+        </div>
+
+        <div class="analytics-description">
+            Percentage of tickets currently resolved
+        </div>
+        </div>
+
+        <div class="analytics-card">
+        <div class="analytics-label">
+            Average Resolution Time
+        </div>
+
+        <div class="analytics-value"
+            id="averageResolutionTime">
+            —
+        </div>
+
+        <div class="analytics-description"
+            id="resolutionSample">
+            Based on available audit records
+        </div>
+        </div>
+
+    </div>
+
+    <div class="analytics-charts">
+
+        <div class="analytics-card">
+
+        <h3>Ticket Status Distribution</h3>
+
+        <div id="statusChart"
+            class="status-chart">
+        </div>
+
+        <div id="statusLegend"
+            class="chart-legend">
+        </div>
+
+        </div>
+
+        <div class="analytics-card">
+
+        <h3>Escalations by Intent</h3>
+
+        <div id="intentChart"
+            class="intent-chart">
+        </div>
+
+        </div>
+
+    </div>
+
+    </section>
+
+    <div class="content">
+
+      <section class="card">
+        <h2>Support Tickets</h2>
+
+        <div class="toolbar">
+          <input
+            class="search"
+            id="searchInput"
+            placeholder="Search tickets..."
+            aria-label="Search tickets"
+          >
+
+          <select class="filter" id="statusFilter"
+                  aria-label="Filter by status">
+            <option value="all">All statuses</option>
+            <option value="pending">Pending</option>
+            <option value="in_progress">In progress</option>
+            <option value="resolved">Resolved</option>
+          </select>
+        </div>
+
+        <div class="ticket-list" id="ticketList">
+          <div class="empty">Loading tickets...</div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Ticket Details</h2>
+
+        <div id="ticketDetails">
+          <div class="empty">
+            Select a ticket to view its details.
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<div class="auth-overlay" id="authOverlay">
+  <form class="auth-box" id="authForm">
+    <h2>Administrator Access</h2>
+
+    <p>
+      Enter your local development administrator API key
+      to access support tickets.
+    </p>
+
+    <input
+      id="apiKeyInput"
+      type="password"
+      placeholder="X-Admin-Key"
+      autocomplete="off"
+      required
+    >
+
+    <button class="primary-button" type="submit">
+      Unlock Dashboard
+    </button>
+
+    <p id="authError" role="alert"></p>
+  </form>
+</div>
+
+<script>
+const API_URL = "/api/tickets";
+
+let adminKey = null;
+let tickets = [];
+let selectedTicketId = null;
+
+const byId = id => document.getElementById(id);
+
+function SetNotice(message, error = false) {
+  const notice = byId("notice");
+  notice.textContent = message;
+  notice.classList.toggle("error", error);
+}
+
+function LockDashboard() {
+  adminKey = null;
+  tickets = [];
+  selectedTicketId = null;
+
+  byId("apiKeyInput").value = "";
+  byId("authOverlay").classList.remove("hidden");
+  byId("ticketList").replaceChildren();
+  byId("ticketDetails").replaceChildren();
+
+  for (const id of [
+    "totalCount",
+    "pendingCount",
+    "progressCount",
+    "resolvedCount"
+  ]) {
+    byId(id).textContent = "—";
+  }
+
+  SetNotice("");
+
+  ClearAnalytics();
+}
+
+async function ApiRequest(path = "", options = {}) {
+  const response = await fetch(API_URL + path, {
+    ...options,
+    headers: {
+      "X-Admin-Key": adminKey,
+      ...(options.headers || {})
+    },
+    cache: "no-store"
+  });
+
+  if (response.status === 401 || response.status === 503) {
+    LockDashboard();
+    throw new Error("Administrator access unavailable or invalid.");
+  }
+
+  if (!response.ok) {
+    let detail = `HTTP ${response.status}`;
+
+    try {
+      const data = await response.json();
+      if (typeof data.detail === "string") {
+        detail = data.detail;
+      }
+    } catch {}
+
+    throw new Error(detail);
+  }
+
+  return response.json();
+}
+
+
+
+function ClearAnalytics() {
+
+  byId("resolutionRate").textContent = "—";
+  byId("averageResolutionTime").textContent = "—";
+  byId("resolutionSample").textContent =
+    "Based on available audit records";
+
+  byId("statusChart").replaceChildren();
+  byId("statusLegend").replaceChildren();
+  byId("intentChart").replaceChildren();
+}
+
+
+
+function GetReportQuery() {
+
+  const start = byId("reportStartDate").value;
+  const end = byId("reportEndDate").value;
+
+  if (start && end && start > end) {
+    throw new Error(
+      "Start date cannot be later than end date."
+    );
+  }
+
+  const params = new URLSearchParams();
+
+  if (start) params.set("start_date", start);
+  if (end) params.set("end_date", end);
+
+  const query = params.toString();
+
+  return query ? `?${query}` : "";
+}
+
+
+
+function RenderStatusChart(data) {
+
+  const chart = byId("statusChart");
+  const legend = byId("statusLegend");
+
+  chart.replaceChildren();
+  legend.replaceChildren();
+
+  const total = data.total_tickets;
+
+  const statuses = [
+    {
+      key: "pending",
+      label: "Pending",
+      count: data.pending_tickets,
+      color: "#e3b45b"
+    },
+    {
+      key: "in_progress",
+      label: "In Progress",
+      count: data.in_progress_tickets,
+      color: "#7095f8"
+    },
+    {
+      key: "resolved",
+      label: "Resolved",
+      count: data.resolved_tickets,
+      color: "#46b99b"
+    }
+  ];
+
+  for (const status of statuses) {
+
+    const percentage = total > 0
+      ? (status.count / total) * 100
+      : 0;
+
+    const segment = document.createElement("div");
+
+    segment.className =
+      `status-segment ${status.key}`;
+
+    segment.style.width = `${percentage}%`;
+
+    segment.title =
+      `${status.label}: ${status.count} (${percentage.toFixed(1)}%)`;
+
+    chart.appendChild(segment);
+
+    const item = document.createElement("div");
+    item.className = "legend-item";
+
+    const dot = document.createElement("span");
+    dot.className = "legend-dot";
+    dot.style.backgroundColor = status.color;
+
+    const label = document.createElement("span");
+
+    label.textContent =
+      `${status.label}: ${status.count}`;
+
+    item.append(dot, label);
+    legend.appendChild(item);
+  }
+}
+
+
+function RenderIntentChart(data) {
+
+  const container = byId("intentChart");
+
+  container.replaceChildren();
+
+  const entries = Object.entries(
+    data.tickets_by_intent || {}
+  ).sort((a, b) => b[1] - a[1]);
+
+  if (entries.length === 0) {
+
+    const empty = document.createElement("div");
+
+    empty.className = "chart-empty";
+    empty.textContent = "No escalation data available.";
+
+    container.appendChild(empty);
+    return;
+  }
+
+  const maxCount = Math.max(
+    ...entries.map(item => item[1])
+  );
+
+  for (const [intent, count] of entries) {
+
+    const row = document.createElement("div");
+    row.className = "intent-row";
+
+    const label = document.createElement("div");
+    label.className = "intent-label";
+
+    label.textContent = intent.replaceAll("_", " ");
+
+    const track = document.createElement("div");
+    track.className = "intent-track";
+
+    const fill = document.createElement("div");
+    fill.className = "intent-fill";
+
+    fill.style.width =
+      `${maxCount > 0 ? count / maxCount * 100 : 0}%`;
+
+    track.appendChild(fill);
+
+    const value = document.createElement("div");
+    value.className = "intent-count";
+    value.textContent = count;
+
+    row.append(label, track, value);
+    container.appendChild(row);
+  }
+}
+
+
+function RenderAnalytics(data) {
+
+  byId("resolutionRate").textContent =
+    `${data.resolution_rate.toFixed(1)}%`;
+
+  const average = data.average_resolution_hours;
+
+  byId("averageResolutionTime").textContent =
+    average === null
+      ? "N/A"
+      : `${average.toFixed(2)} hrs`;
+
+  byId("resolutionSample").textContent =
+    `Based on ${data.resolution_time_sample_size} resolved ticket(s) with audit records`;
+
+  RenderStatusChart(data);
+  RenderIntentChart(data);
+}
+
+
+
+async function LoadAnalytics() {
+
+  if (!adminKey) return;
+
+  try {
+    const query = GetReportQuery();
+
+    const response = await fetch(
+      `/api/analytics/report${query}`,
+      {
+        headers: {
+          "X-Admin-Key": adminKey
+        },
+        cache: "no-store"
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Analytics request failed: HTTP ${response.status}`
+      );
+    }
+
+    const data = await response.json();
+
+    if (!adminKey) return;
+
+    RenderAnalytics(data);
+
+  } catch (error) {
+    ClearAnalytics();
+    SetNotice(error.message, true);
+  }
+}
+
+
+
+async function LoadTickets() {
+  if (!adminKey) return;
+
+  byId("refreshButton").disabled = true;
+  SetNotice("Loading support tickets...");
+
+  try {
+    const data = await ApiRequest();
+
+    tickets = data.tickets;
+    UpdateStats();
+    RenderTickets();
+
+    if (
+      selectedTicketId &&
+      !tickets.some(t => t.ticket_id === selectedTicketId)
+    ) {
+      selectedTicketId = null;
+    }
+
+    RenderDetails();
+
+    await LoadAnalytics();
+
+    SetNotice(`Loaded ${tickets.length} ticket(s).`);
+
+  } catch (error) {
+    SetNotice(error.message, true);
+
+  } finally {
+    byId("refreshButton").disabled = false;
+  }
+}
+
+function UpdateStats() {
+  byId("totalCount").textContent = tickets.length;
+
+  for (const [status, element] of [
+    ["pending", "pendingCount"],
+    ["in_progress", "progressCount"],
+    ["resolved", "resolvedCount"]
+  ]) {
+    byId(element).textContent =
+      tickets.filter(t => t.status === status).length;
+  }
+}
+
+function MakeBadge(status) {
+  const badge = document.createElement("span");
+
+  badge.className = `badge ${status}`;
+  badge.textContent = status.replace("_", " ");
+
+  return badge;
+}
+
+function RenderTickets() {
+  const container = byId("ticketList");
+  container.replaceChildren();
+
+  const query = byId("searchInput").value.toLowerCase().trim();
+  const filter = byId("statusFilter").value;
+
+  const filtered = tickets.filter(ticket => {
+    const matchesStatus =
+      filter === "all" || ticket.status === filter;
+
+    const searchText = [
+      ticket.ticket_id,
+      ticket.customer_message,
+      ticket.intent,
+      ticket.thread_id
+    ].join(" ").toLowerCase();
+
+    return matchesStatus && searchText.includes(query);
+  });
+
+  if (!filtered.length) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = "No matching support tickets.";
+    container.appendChild(empty);
+    return;
+  }
+
+  for (const ticket of filtered) {
+    const button = document.createElement("button");
+
+    button.className = "ticket-row";
+    button.classList.toggle(
+      "selected",
+      ticket.ticket_id === selectedTicketId
+    );
+
+    const top = document.createElement("div");
+    top.className = "ticket-top";
+
+    const id = document.createElement("span");
+    id.className = "ticket-id";
+    id.textContent = ticket.ticket_id;
+
+    top.append(id, MakeBadge(ticket.status));
+
+    const message = document.createElement("div");
+    message.className = "ticket-message";
+    message.textContent =
+      ticket.customer_message.slice(0, 150);
+
+    button.append(top, message);
+
+    button.addEventListener("click", () => {
+      selectedTicketId = ticket.ticket_id;
+      RenderTickets();
+      RenderDetails();
+    });
+
+    container.appendChild(button);
+  }
+}
+
+function AddDetail(container, label, value) {
+  const row = document.createElement("div");
+  row.className = "detail-row";
+
+  const heading = document.createElement("div");
+  heading.className = "detail-label";
+  heading.textContent = label;
+
+  const content = document.createElement("div");
+  content.className = "detail-value";
+  content.textContent = String(value ?? "—");
+
+  row.append(heading, content);
+  container.appendChild(row);
+}
+
+
+async function LoadTicketHistory(ticketId, container) {
+
+  container.replaceChildren();
+
+  const loading = document.createElement("div");
+  loading.className = "audit-empty";
+  loading.textContent = "Loading ticket history...";
+
+  container.appendChild(loading);
+
+  try {
+
+    const data = await ApiRequest(
+      `/${encodeURIComponent(ticketId)}/history`
+    );
+
+    // Ignore results if another ticket was selected
+    // while this request was in progress.
+    if (selectedTicketId !== ticketId) return;
+
+    if (!container.isConnected) return;
+
+    container.replaceChildren();
+
+    if (data.history.length === 0) {
+
+      const empty = document.createElement("div");
+      empty.className = "audit-empty";
+      empty.textContent =
+        "No status changes recorded for this ticket.";
+
+      container.appendChild(empty);
+      return;
+    }
+
+    const timeline = document.createElement("div");
+    timeline.className = "audit-timeline";
+
+    // Show the newest events first.
+    const events = [...data.history].reverse();
+
+    for (const event of events) {
+
+      const item = document.createElement("div");
+      item.className = "audit-event";
+
+      const transition = document.createElement("div");
+      transition.className = "audit-transition";
+
+      transition.textContent =
+        `${event.previous_status} → ${event.new_status}`;
+
+      const actor = document.createElement("div");
+      actor.className = "audit-meta";
+      actor.textContent = `Changed by: ${event.actor}`;
+
+      const timestamp = document.createElement("div");
+      timestamp.className = "audit-meta";
+
+      const date = new Date(event.changed_at);
+
+      timestamp.textContent = Number.isNaN(date.getTime())
+        ? event.changed_at
+        : date.toLocaleString();
+
+      item.append(
+        transition,
+        actor,
+        timestamp
+      );
+
+      timeline.appendChild(item);
+    }
+
+    container.appendChild(timeline);
+
+  } catch (error) {
+
+    if (selectedTicketId !== ticketId) return;
+    if (!container.isConnected) return;
+
+    container.replaceChildren();
+
+    const message = document.createElement("div");
+    message.className = "audit-empty";
+
+    message.textContent =
+      "Unable to load ticket activity.";
+
+    container.appendChild(message);
+
+    SetNotice(error.message, true);
+  }
+}
+
+
+function RenderDetails() {
+  const container = byId("ticketDetails");
+  container.replaceChildren();
+
+  const ticket = tickets.find(
+    t => t.ticket_id === selectedTicketId
+  );
+
+  if (!ticket) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = "Select a ticket to view its details.";
+    container.appendChild(empty);
+    return;
+  }
+
+  AddDetail(container, "Ticket ID", ticket.ticket_id);
+  AddDetail(container, "Conversation ID", ticket.thread_id);
+  AddDetail(container, "Intent", ticket.intent);
+  AddDetail(container, "Customer Request", ticket.customer_message);
+  AddDetail(container, "Created", ticket.created_at);
+  AddDetail(container, "Updated", ticket.updated_at);
+
+  const statusRow = document.createElement("div");
+  statusRow.className = "detail-row";
+  statusRow.appendChild(MakeBadge(ticket.status));
+  container.appendChild(statusRow);
+
+  const nextStatus = {
+    pending: "in_progress",
+    in_progress: "resolved",
+    resolved: "in_progress"
+  }[ticket.status];
+
+  const label = {
+    pending: "Start Working",
+    in_progress: "Mark Resolved",
+    resolved: "Reopen Ticket"
+  }[ticket.status];
+
+  if (nextStatus) {
+    const button = document.createElement("button");
+    button.className = "primary-button";
+    button.textContent = label;
+
+    button.addEventListener("click", async () => {
+      button.disabled = true;
+
+      try {
+        await ApiRequest(
+          `/${encodeURIComponent(ticket.ticket_id)}/status`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ status: nextStatus })
+          }
+        );
+
+        await LoadTickets();
+        SetNotice(`Ticket updated to ${nextStatus}.`);
+
+      } catch (error) {
+        SetNotice(error.message, true);
+        button.disabled = false;
+      }
+    });
+
+    container.appendChild(button);
+  }
+
+
+
+  const auditSection = document.createElement("section");
+  auditSection.className = "audit-section";
+
+  const title = document.createElement("h3");
+  title.textContent = "Ticket Activity History";
+
+  const historyContainer = document.createElement("div");
+
+  auditSection.append(
+    title,
+    historyContainer
+  );
+
+  container.appendChild(auditSection);
+
+  LoadTicketHistory(
+    ticket.ticket_id,
+    historyContainer
+  );
+
+}
+
+
+
+
+byId("authForm").addEventListener("submit", async event => {
+  event.preventDefault();
+
+  const key = byId("apiKeyInput").value.trim();
+  if (!key) return;
+
+  adminKey = key;
+  byId("authError").textContent = "";
+
+  try {
+    await ApiRequest();
+    byId("authOverlay").classList.add("hidden");
+    byId("apiKeyInput").value = "";
+    await LoadTickets();
+
+  } catch (error) {
+    byId("authError").textContent = error.message;
+    LockDashboard();
+    byId("authError").textContent = error.message;
+  }
+});
+
+byId("searchInput").addEventListener("input", RenderTickets);
+byId("statusFilter").addEventListener("change", RenderTickets);
+byId("refreshButton").addEventListener("click", LoadTickets);
+byId("logoutButton").addEventListener("click", LockDashboard);
+
+
+
+
+byId("applyReportFilter").addEventListener(
+  "click",
+  LoadAnalytics
+);
+
+byId("clearReportFilter").addEventListener(
+  "click",
+  () => {
+    byId("reportStartDate").value = "";
+    byId("reportEndDate").value = "";
+    LoadAnalytics();
+  }
+);
+
+byId("exportReportButton").addEventListener(
+  "click",
+  async () => {
+
+    if (!adminKey) return;
+
+    const button = byId("exportReportButton");
+    button.disabled = true;
+
+    try {
+      const query = GetReportQuery();
+
+      const response = await fetch(
+        `/api/analytics/export${query}`,
+        {
+          headers: {
+            "X-Admin-Key": adminKey
+          },
+          cache: "no-store"
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          `Export failed: HTTP ${response.status}`
+        );
+      }
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "novatech_support_report.csv";
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      URL.revokeObjectURL(url);
+
+      SetNotice("CSV report exported.");
+
+    } catch (error) {
+      SetNotice(error.message, true);
+
+    } finally {
+      button.disabled = false;
+    }
+  }
+);
+
+</script>
+</body>
+</html>

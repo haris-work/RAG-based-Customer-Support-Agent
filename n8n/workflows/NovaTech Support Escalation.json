@@ -1,0 +1,365 @@
+{
+  "name": "Project 04 - NovaTech Support Escalation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "novatech-support-ticket",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "7332bdb2-c23f-44f4-bfd8-71376e59acd3",
+      "name": "ReceiveSupportTicket",
+      "webhookId": "cd48f526-fdaa-4ddf-b57e-5038ee07365e",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "dnJcGmTtR1t8cVbI",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst output = [];\n\nfor (const item of $input.all()) {\n\n  const ticket = item.json.body || {};\n\n  const requiredFields = [\n    \"ticket_id\",\n    \"thread_id\",\n    \"customer_message\",\n    \"intent\",\n    \"status\",\n    \"created_at\"\n  ];\n\n  for (const field of requiredFields) {\n    if (\n      typeof ticket[field] !== \"string\" ||\n      !ticket[field].trim()\n    ) {\n      throw new Error(\n        `Missing or invalid field: ${field}`\n      );\n    }\n  }\n\n  const validIntents = [\n    \"order_account\",\n    \"human_support\"\n  ];\n\n  if (!validIntents.includes(ticket.intent)) {\n    throw new Error(\"Unsupported escalation intent\");\n  }\n\n  if (ticket.status !== \"pending\") {\n    throw new Error(\"Ticket must be pending\");\n  }\n\n  output.push({\n    json: {\n      ticket_id: ticket.ticket_id,\n      thread_id: ticket.thread_id,\n      customer_message: ticket.customer_message,\n      intent: ticket.intent,\n      status: ticket.status,\n      created_at: ticket.created_at\n    }\n  });\n}\n\nreturn output;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        0
+      ],
+      "id": "ae21f37c-4e65-4abb-8624-ef92386d90a5",
+      "name": "ValidateTicket"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.intent }}",
+                    "rightValue": "order_account",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "fe9a39f5-aaf8-455c-a45a-46e17faa730a"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Order Operations"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "68aced9e-7cce-4b41-afae-084bdb72c763",
+                    "leftValue": "={{ $json.intent }}",
+                    "rightValue": "human_support",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Customer Support"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        672,
+        0
+      ],
+      "id": "a5b1962b-7c68-482e-b12f-a6a2ca1b58dd",
+      "name": "RouteTicket"
+    },
+    {
+      "parameters": {
+        "sendTo": "hariskhanzadapms270@gmail.com",
+        "subject": "={{ \"[NovaTech Order Operations] New Ticket - \" + $json.ticket_id }}",
+        "emailType": "text",
+        "message": "={{ `NOVATECH STORE — SUPPORT ESCALATION  A new customer support request requires human review.  TICKET INFORMATION ------------------------------- Ticket ID: ${$json.ticket_id} Conversation ID: ${$json.thread_id} Intent: ${$json.intent} Status: ${$json.status} Created At: ${$json.created_at}  CUSTOMER REQUEST ------------------------------- ${$json.customer_message}  REQUIRED ACTION ------------------------------- 1. Review the customer request. 2. Verify the customer's identity through an    authorized support channel if necessary. 3. Investigate the request. 4. Record the resolution in the support system.  This notification was generated by the NovaTech AI Customer Support Agent.  No customer-specific action has been performed automatically. ` }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        896,
+        -96
+      ],
+      "id": "3d95d024-c1ff-4ffc-aae9-c7f2f351e65b",
+      "name": "NotifyOrderTeam",
+      "webhookId": "bfb729bd-b6e6-4dde-aef7-64708c47535e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "V5fEfpFyZX1iCbS5",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "hariskhanzadapms270@gmail.com",
+        "subject": "={{ \"[NovaTech Customer Support] New Ticket - \" + $json.ticket_id }}",
+        "emailType": "text",
+        "message": "={{ `NOVATECH STORE — SUPPORT ESCALATION  A new customer support request requires human review.  TICKET INFORMATION ------------------------------- Ticket ID: ${$json.ticket_id} Conversation ID: ${$json.thread_id} Intent: ${$json.intent} Status: ${$json.status} Created At: ${$json.created_at}  CUSTOMER REQUEST ------------------------------- ${$json.customer_message}  REQUIRED ACTION ------------------------------- 1. Review the customer request. 2. Verify the customer's identity through an    authorized support channel if necessary. 3. Investigate the request. 4. Record the resolution in the support system.  This notification was generated by the NovaTech AI Customer Support Agent.  No customer-specific action has been performed automatically. ` }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        896,
+        96
+      ],
+      "id": "58c746b9-3399-4524-bd2d-bb4c9ad23cd5",
+      "name": "NotifySupportTeam",
+      "webhookId": "f66d6a43-75e2-43f5-88a7-20661bc9d7ad",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "V5fEfpFyZX1iCbS5",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "rowNotExists",
+        "dataTableId": {
+          "__rl": true,
+          "value": "Rt2LXEaaN5FoDVLs",
+          "mode": "list",
+          "cachedResultName": "NovaTechNotificationHistory",
+          "cachedResultUrl": "/projects/JVKmQDWiJzN6HREo/datatables/Rt2LXEaaN5FoDVLs"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "ticket_id",
+              "keyValue": "={{ $json.ticket_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        0
+      ],
+      "id": "105408aa-07d0-4ebb-8008-9943918e41e5",
+      "name": "If row does not exist"
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "Rt2LXEaaN5FoDVLs",
+          "mode": "list",
+          "cachedResultName": "NovaTechNotificationHistory",
+          "cachedResultUrl": "/projects/JVKmQDWiJzN6HREo/datatables/Rt2LXEaaN5FoDVLs"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ticket_id": "={{ $('ValidateTicket').first().json.ticket_id }}",
+            "intent": "={{ $('ValidateTicket').first().json.intent }}",
+            "sent_at": "={{ $now.toISO() }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "ticket_id",
+              "displayName": "ticket_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "intent",
+              "displayName": "intent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "sent_at",
+              "displayName": "sent_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1168,
+        16
+      ],
+      "id": "3f439ecf-9adc-4203-94ed-d01e199f8e30",
+      "name": "Insert row"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{\n  {\n    ticket_id: $('ValidateTicket').first().json.ticket_id,\n    delivery_status: 'sent'\n  }\n}}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1392,
+        16
+      ],
+      "id": "9c09b275-4863-4194-bbc3-dffbe74ea214",
+      "name": "RespondDeliveryConfirmed"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "ReceiveSupportTicket": {
+      "main": [
+        [
+          {
+            "node": "ValidateTicket",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ValidateTicket": {
+      "main": [
+        [
+          {
+            "node": "If row does not exist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RouteTicket": {
+      "main": [
+        [
+          {
+            "node": "NotifyOrderTeam",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "NotifySupportTeam",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If row does not exist": {
+      "main": [
+        [
+          {
+            "node": "RouteTicket",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NotifyOrderTeam": {
+      "main": [
+        [
+          {
+            "node": "Insert row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NotifySupportTeam": {
+      "main": [
+        [
+          {
+            "node": "Insert row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert row": {
+      "main": [
+        [
+          {
+            "node": "RespondDeliveryConfirmed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "010b0ab4-e5d3-4c4b-8eb0-19cfe57c30de",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "99e1c58029993d7b83d366bc872a943b0991500537209606cfaa01b57a7dc6bd"
+  },
+  "nodeGroups": [],
+  "id": "kaqnFXHVf3YDHhCL",
+  "tags": []
+}

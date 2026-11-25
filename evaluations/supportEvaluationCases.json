@@ -1,0 +1,51 @@
+
+[
+  {
+    "id": "EVAL001",
+    "category": "policy_retrieval",
+    "question": "What is your return policy?",
+    "expected_intent": null,
+    "expected_status": "answered",
+    "requires_sources": true
+  },
+  {
+    "id": "EVAL002",
+    "category": "policy_retrieval",
+    "question": "How long does standard shipping take?",
+    "expected_intent": null,
+    "expected_status": "answered",
+    "requires_sources": true
+  },
+  {
+    "id": "EVAL003",
+    "category": "policy_retrieval",
+    "question": "What happens if my product arrives damaged?",
+    "expected_intent": null,
+    "expected_status": "answered",
+    "requires_sources": true
+  },
+  {
+    "id": "EVAL004",
+    "category": "human_escalation",
+    "question": "I want to speak directly to a human representative.",
+    "expected_intent": "human_support",
+    "expected_status": "needs_review",
+    "requires_sources": false
+  },
+  {
+    "id": "EVAL005",
+    "category": "order_escalation",
+    "question": "Please investigate the current location of my specific order.",
+    "expected_intent": "order_account",
+    "expected_status": "needs_review",
+    "requires_sources": false
+  },
+  {
+    "id": "EVAL006",
+    "category": "human_escalation",
+    "question": "Please create a support request so a person can help me.",
+    "expected_intent": "human_support",
+    "expected_status": "needs_review",
+    "requires_sources": false
+  }
+]

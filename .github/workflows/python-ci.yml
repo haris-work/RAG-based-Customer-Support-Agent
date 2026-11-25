@@ -1,0 +1,46 @@
+
+name: NovaTech Python CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-tests:
+    name: Python Syntax and Offline Tests
+
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Display Python version
+        run: python --version
+
+      - name: Check Python syntax
+        run: |
+          python -m compileall -q \
+            agents \
+            services \
+            routes \
+            scripts \
+            tests \
+            main.py
+
+      - name: Test customer session security
+        run: python -m tests.testCustomerSessionCore
+
+      - name: Test evaluation regression checker
+        run: python -m tests.testEvaluationRegression
