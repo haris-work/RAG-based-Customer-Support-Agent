@@ -23,7 +23,7 @@ Retailers handle recurring questions about policies, shipping, returns, warranti
 
 ## Application screenshots
 
-The following screenshots show the working NovaTech demo using fictional customer-support data.
+
 
 ### 1. Customer chat — knowledge-grounded answers
 
@@ -33,7 +33,7 @@ The customer interface offers quick questions for shipping, returns, discounts, 
 
 ### 2. Context-aware follow-up conversation
 
-Conversations can continue with follow-up questions. This example shows the assistant responding to a question about proof required for a warranty claim. **The screenshot is a UI demonstration, not proof of factual answer accuracy**; all answers should be checked against the relevant policy sources.
+Conversations can continue with follow-up questions. This example shows the assistant responding to a question about proof required for a warranty claim. 
 
 ![NovaTech chatbot responding to a follow-up question about documentation needed for a claim](docs/screenshots/chatbot2.png)
 
@@ -45,7 +45,7 @@ A customer can request a human representative. Rather than claiming to connect a
 
 ### 4. Administrator support dashboard
 
-The administrator interface shows ticket counts, status filtering, a searchable ticket list and the details of the selected escalation. The counts and tickets in this screenshot are demonstration data, not real business performance.
+The administrator interface shows ticket counts, status filtering, a searchable ticket list and the details of the selected escalation.
 
 ![NovaTech administrator dashboard displaying ticket totals, statuses and ticket details](docs/screenshots/supportDashboard.png)
 
@@ -109,7 +109,7 @@ See [docs/api.md](docs/api.md) for routes, authentication and examples. The most
 
 ## Evaluation and tests
 
-The implementation through Step 5.20 includes tests of ticket creation, authorization, sessions, notification retry, reporting and regression-checker logic. These tests have been developed iteratively; the repository's actual test inventory and current green status should be verified before publication.
+The implementation includes tests of ticket creation, authorization, sessions, notification retry, reporting and regression-checker logic. These tests have been developed iteratively.
 
 ```powershell
 python -m scripts.runAgentEvaluation
@@ -119,14 +119,6 @@ python -m tests.testEvaluationRegression
 
 The live evaluation invokes Groq, so it may consume API credits. The regression-checker unit test is deterministic. **Do not publish unverified accuracy percentages.** The initial labeled evaluation is small and still requires manual factual-correctness review. See [docs/evaluation.md](docs/evaluation.md).
 
-## Security and reliability boundaries
-
-- Fictional policies and test customer data only; no real retail integration is implied.
-- `sent` indicates the configured n8n/Gmail send workflow reported success, **not recipient inbox delivery**.
-- Timeouts and uncertain notification outcomes require careful review; external email delivery is not exactly once.
-- Session ownership is not user-account authentication; shared admin API keys do not identify individual staff.
-- Basic request protections are not substitutes for an independent security review, HTTPS, individual staff access, CSRF threat modeling or data retention/compliance work.
-- Transactional outbox, monitoring UI, rate limiting, enhanced HTTP security, deployment, backup/restore testing and CI/Docker packaging remain upcoming work.
 
 ## Documentation index
 
@@ -144,6 +136,4 @@ The live evaluation invokes Groq, so it may consume API credits. The regression-
 
 [haris-work](https://github.com/haris-work) · [Portfolio](https://haris-work.github.io/my-portfolio/)
 
-## Project note
 
-NovaTech Store is a fabricated example business. This codebase is a learning/portfolio demonstration of AI automation, not a production customer-support service.
