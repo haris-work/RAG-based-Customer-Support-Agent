@@ -4,7 +4,6 @@
 
 An end-to-end AI customer-support application for a **fictional electronics retailer, NovaTech Store**. The project combines knowledge-grounded AI responses, routing to human review, a ticket workflow, automated notifications, an administrator interface, support analytics, and evaluation/regression testing.
 
-> **Project stage:** Implemented through **Phase 5, Step 5.20** in the development walkthrough. This README documents the reported implementation, not an independently audited or production-deployed system. CI, Docker packaging, structured logging, backup automation, deployment and final acceptance testing are **not yet completed**.
 
 ## What it solves
 
